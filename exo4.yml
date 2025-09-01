@@ -1,0 +1,71 @@
+openapi: "3.0.3"
+info:
+  title: Products API
+  version: "1.0.0"
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Lait Demi-écrémé"
+        expiration_datetime:
+          type: string
+          format: date-time
+          example: "2024-04-15T14:30:00Z"
+        price:
+          type: number
+          format: decimal
+          example: 2.99
+      required:
+        - name
+        - expiration_datetime
+        - price
+  parameters:
+    limitParam:
+      name: limit
+      in: query
+      description: Nombre maximum d'éléments à retourner
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        example: 10
+    searchParam:
+      name: q
+      in: query
+      description: Terme de recherche pour filtrer les produits
+      required: false
+      schema:
+        type: string
+        example: "lait"
+paths:
+  /products:
+    get:
+      summary: Récupérer la liste des produits
+      description: Retourne une liste de produits avec possibilité de filtrage et pagination
+      parameters:
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: Liste des produits récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              examples:
+                products_list:
+                  summary: Liste avec plusieurs produits
+                  value:
+                    - name: "Yaourt Nature Bio"
+                      expiration_datetime: "2024-04-15T12:00:00Z"
+                      price: 1.99
+                    - name: "Lait Entier Bio"
+                      expiration_datetime: "2024-04-20T12:00:00Z"
+                      price: 2.50
+                    - name: "Fromage Blanc"
+                      expiration_datetime:
